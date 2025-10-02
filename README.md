@@ -115,9 +115,3 @@ customer_demographics → customer_transactions ← store_info
 |**Data Quality**|`*_error` flags|Monitoring & cleanup|
 
 ---
--- Loyalty member analysis
-SELECT cd.is_loyalty_member, AVG(ct.month_total), AVG(ct.orders_count)
-FROM customer_transactions ct
-JOIN customer_demographics cd ON ct.customer_id = cd.customer_id
-GROUP BY cd.is_loyalty_member;
-``
