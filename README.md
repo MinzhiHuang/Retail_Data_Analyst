@@ -76,6 +76,9 @@ customer_demographics → customer_transactions ← store_info
 
 ### 👥 customer_demographics (10K rows)
 
+<details>
+<summary><b>📋 View Schema (8 columns)</b></summary>
+
 |Field|Description|
 |:---|:---|
 |`customer_id` 🔑|Unique identifier|
@@ -87,9 +90,14 @@ customer_demographics → customer_transactions ← store_info
 |`age`|Years|
 |`gender`|M / F / Other|
 
+</details>
+
 ---
 
 ### 🏪 store_info (30 rows)
+
+<details>
+<summary><b>📋 View Schema (10 columns)</b></summary>
 
 |Field|Description|
 |:---|:---|
@@ -101,17 +109,18 @@ customer_demographics → customer_transactions ← store_info
 |`store_type`|Neighborhood / Superstore / Express|
 |`avg_daily_customers`|Daily traffic|
 
----
-
-## 🎯 Analysis Use Cases
-
-|Use Case|Key Fields|Analysis Type|
-|:---|:---|:---|
-|**Customer Segmentation**|`customer_segment`, `income_bucket`, `age`, `household_size`|Demographic profiling|
-|**Basket Analysis**|`distinct_products`, `quantities`, `basket_size_unique`|Cross-sell opportunities|
-|**Store Performance**|`month_total`, `store_type`, `store_size_sqft`|Location optimization|
-|**Temporal Patterns**|`month`, `season`, `morning/midday/evening_orders`|Seasonality & timing|
-|**Loyalty Impact**|`is_loyalty_member`, `month_total`, `orders_count`|Program effectiveness|
-|**Data Quality**|`*_error` flags|Monitoring & cleanup|
+</details>
 
 ---
+
+## 1. Exploratory Data Analysis & Data Cleaning
+
+### NULL Values Detection
+
+Analysis of all three tables (`customer_transactions`, `customer_demographics`, `store_info`) revealed that only the `customer_transactions` table contains NULL values in the `dominant_payment_method` field:
+
+| Column | Total Rows | NULL Rows | Empty String Rows | NULL % | Empty String % |
+|:---|:---|:---|:---|:---|:---|
+| dominant_payment_method | 60,000 | 600 | 0 | 1.00% | 0.00% |
+
+*Created a cleaned view excluding records with invalid payment methods. The cleaned view contains 59,400 rows.*
