@@ -10,15 +10,44 @@
 
 ---
 
-## 🔗 Entity Relationships
+## ⭐ Star Schema Design
+
+This dataset implements a Star Schema for optimized analytical performance:
 
 ```
-customer_demographics → customer_transactions ← store_info
-    (customer_id)           ↑              ↑        (store_id)
-                            └──────────────┘
+           Dimension                Fact Table               Dimension
+              ┌─────────────────────────────────────────────────┐
+              │                                                 │
+   customer_demographics                                   store_info
+   ┌──────────────────┐          customer_id    store_id  ┌──────────────┐
+   │ 10,000 customers │  ────────────┐    ┌──────────────│  30 stores   │
+   │                  │              │    │              │              │
+   │ • attributes     │              ▼    ▼              │ • attributes │
+   │ • attributes     │      customer_transactions       │ • attributes |
+   │ • attributes     │      ┌──────────────────┐        │ • attributes |
+   │ • attributes     │      │   60,000 rows    │        │ • attributes |
+   └──────────────────┘      │                  │        └──────────────┘
+                             │ Grain: Customer  │
+                             │   × Month        │
+                             │   × Store        │
+                             │                  │
+                             │ Measures:        │
+                             │ • Sales amount   │
+                             │ • Orders count   │
+                             │ • Discounts      │
+                             │ • Basket metrics │
+                             └──────────────────┘
 ```
 
-**Join Keys:** `customer_id`, `store_id`
+Note: This section focuses on model roles, grain, and measures. For column-level details, see the Schema Quick Reference below.
+
+📊 Model Components
+
+| Component | Table | Role | Grain | Records |
+|:---|:---|:---|:---|:---|
+| Fact | `customer_transactions` | Measures & metrics | Customer × Month × Store | 60,000 |
+| Dimension | `customer_demographics` | Customer attributes | 1 row per customer | 10,000 |
+| Dimension | `store_info` | Store attributes | 1 row per store | 30 |
 
 ---
 
@@ -30,6 +59,7 @@ customer_demographics → customer_transactions ← store_info
 <summary><b>🔑 Identifiers (6)</b></summary>
 
 - `customer_id`, `month`, `store_id`, `store_name`, `city`, `province`
+
 </details>
 
 <details>
@@ -37,12 +67,14 @@ customer_demographics → customer_transactions ← store_info
 
 - `customer_segment` (Regular, Occasional, VIP)
 - `is_loyalty_member`, `customer_tenure_months`, `household_size`, `income_bucket` (<50k, 50-100k, >100k)
+
 </details>
 
 <details>
 <summary><b>📈 Transaction Metrics (4)</b></summary>
 
 - `orders_count`, `morning_orders`, `midday_orders`, `evening_orders`
+
 </details>
 
 <details>
@@ -50,12 +82,14 @@ customer_demographics → customer_transactions ← store_info
 
 - `distinct_products`, `unit_prices`, `quantities`, `line_subtotals`
 - `basket_size_unique`, `avg_unit_price`, `items_value_sum`
+
 </details>
 
 <details>
 <summary><b>💰 Financial Metrics (4)</b></summary>
 
 - `month_subtotal`, `month_discount`, `month_tax`, `month_total`
+
 </details>
 
 <details>
@@ -63,6 +97,7 @@ customer_demographics → customer_transactions ← store_info
 
 - `top_category`, `dominant_payment_method` (Credit/Debit/Cash/Mobile)
 - `promotion_applied`, `season`, `has_back_to_school`, `big_customer`
+
 </details>
 
 <details>
@@ -70,6 +105,7 @@ customer_demographics → customer_transactions ← store_info
 
 - `data_errors`, `dominant_payment_method_error`, `unit_prices_error`
 - `store_name_error`, `month_error`, `subtotal_error`, `duplicate_error`
+
 </details>
 
 ---
