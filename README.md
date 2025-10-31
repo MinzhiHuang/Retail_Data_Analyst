@@ -149,14 +149,20 @@ Note: This section focuses on model roles, grain, and measures. For column-level
 
 ---
 
-## 1. Exploratory Data Analysis & Data Cleaning
+## 1. Data Quality Checking & Cleaning
 
-### NULL Values Detection
+### Findings
 
-Analysis of all three tables (`customer_transactions`, `customer_demographics`, `store_info`) revealed that only the `customer_transactions` table contains NULL values in the `dominant_payment_method` field:
+First, we removed 1,662 rows from the customer transactions table that were flagged with data errors. Main issues were missing payment method, store‑name whitespace, subtotal mismatches, potential duplicates, negative prices, and future‑month labels.
 
-| Column | Total Rows | NULL Rows | Empty String Rows | NULL % | Empty String % |
-|:---|:---|:---|:---|:---|:---|
-| dominant_payment_method | 60,000 | 600 | 0 | 1.00% | 0.00% |
+During validation, order count inconsistencies appeared only when the total orders were zero. For records with a positive order count, the sum of morning, midday, and evening orders matched the total. The zero‑order inconsistencies were concentrated among Occasional customers.
 
-*Created a cleaned view excluding records with invalid payment methods. The cleaned view contains 59,400 rows.*
+Outliers identified with the IQR method for order count, monthly total, and average unit price affected roughly one percent of records and were not remediated. In this iteration, cleaning was limited to removing rows with data errors; no imputations or other rule‑based fixes were performed.
+
+### What it checks
+
+- Basic cleaning of error‑marked rows in `customer_transactions`.
+- Key integrity: PK/FK checks and composite key uniqueness in transactions.
+- Core business rules: orders add‑up check and financial total identity.
+- Nulls and time‑coverage snapshot across the three tables.
+- Quick outlier scan and light profiling of demographics and stores.
