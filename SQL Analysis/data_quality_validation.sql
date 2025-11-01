@@ -7,9 +7,21 @@
 -- 1. DATA CLEANING
 -- ==========================================
 
+-- There are six unique values in the data error column, missing dominant_payment_method, trailing whitespace in store_name,
+-- potential duplicate record, month_subtotal mismatch with line_subtotals, negative unit price in unit_prices, future month label.
+-- Where the trailing whitespace in store_name can fixed 
+UPDATE public."customer_transactions"
+SET "store_name" = RTRIM("store_name"),
+    "data_errors" = (
+      (replace("data_errors", '''','"'))::jsonb 
+      - 'trailing whitespace in store_name'      
+    )::text
+WHERE "store_name" <> RTRIM("store_name")
+   OR position('trailing whitespace in store_name' in coalesce("data_errors",'[]')) > 0;
+
 -- Remove records with data errors
-DELETE FROM customer_transactions
-WHERE data_errors::text != '[]';
+DELETE FROM public."customer_transactions"
+WHERE (replace("data_errors", '''','"'))::jsonb <> '[]'::jsonb;
 
 
 -- ==========================================

@@ -153,7 +153,7 @@ Note: This section focuses on model roles, grain, and measures. For column-level
 
 ### Findings
 
-First, we removed 1,662 rows from the customer transactions table that were flagged with data errors. Main issues were missing payment method, store‑name whitespace, subtotal mismatches, potential duplicates, negative prices, and future‑month labels.
+First, we trimmed trailing whitespace in store_name, then deleted 1,369 rows still flagged with errors—missing payment method, subtotal mismatches, potential duplicates, negative unit prices, and future‑month labels—leaving 58,631 records.
 
 During validation, order count inconsistencies appeared only when the total orders were zero. For records with a positive order count, the sum of morning, midday, and evening orders matched the total. The zero‑order inconsistencies were concentrated among Occasional customers.
 
