@@ -1,3 +1,5 @@
+* The Retail PowerBI Dashboard is currently under development and will be updated regularly upon completion.
+
 # 🛒 Retail Dataset Documentation
 
 ## 📊 Dataset Overview
